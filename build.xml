@@ -28,15 +28,13 @@
  
   <property name="Name" value="Hadoop GPL Compression"/>
   <property name="name" value="hadoop-lzo"/>
-  <property name="version" value="0.4.14"/>
+  <property name="version" value="0.4.15"/>
   <property name="final.name" value="${name}-${version}"/>
   <property name="year" value="2011"/>
 
   <property name="src.dir" value="${basedir}/src"/>  	
   <property name="java.src.dir" value="${src.dir}/java"/>
   <property name="native.src.dir" value="${basedir}/src/native"/>
-  <property name="lib.dir" value="${basedir}/lib"/>
-  <property name="test.lib.dir" value="${lib.dir}"/>
 
   <property name="build.dir" value="${basedir}/build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
@@ -116,10 +114,6 @@
   <!-- the normal classpath -->
   <path id="classpath">
     <pathelement location="${build.classes}"/>
-    <fileset dir="${lib.dir}">
-      <include name="**/*.jar" />
-      <exclude name="**/excluded/" />
-    </fileset>
     <pathelement location="${conf.dir}"/>
     <path refid="ivy-common.classpath"/>
   </path>
@@ -132,10 +126,6 @@
     <pathelement location="${build.dir}"/>
     <pathelement location="${build.examples}"/>
     <pathelement location="${build.tools}"/>
-    <fileset dir="${test.lib.dir}">
-      <include name="**/*.jar" />
-      <exclude name="**/excluded/" />
-    </fileset>
     <path refid="classpath"/>
   </path>
 
@@ -247,6 +237,7 @@
     <exec dir="${build.native}" executable="sh" failonerror="true">
        <env key="OS_NAME" value="${os.name}"/>
        <env key="OS_ARCH" value="${os.arch}"/>
+       <env key="LDFLAGS" value="-Wl,--no-as-needed"/>
        <env key="JVM_DATA_MODEL" value="${sun.arch.data.model}"/>
        <env key="NATIVE_SRCDIR" value="${native.src.dir}"/>
        <arg line="${native.src.dir}/configure"/>
@@ -336,7 +327,7 @@
       <sysproperty key="test.build.extraconf" value="${test.build.extraconf}" />
       <sysproperty key="hadoop.policy.file" value="hadoop-policy.xml"/>
       <sysproperty key="java.library.path"
-       value="${build.native}/lib:${lib.dir}/native/${build.platform}"/>
+       value="${build.native}/lib"/>
       <sysproperty key="install.c++.examples" value="${install.c++.examples}"/>
       <!-- set compile.c++ in the child jvm only if it is set -->
       <syspropertyset dynamic="no">
@@ -428,6 +419,7 @@
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/lib"/>
     <mkdir dir="${dist.dir}/docs"/>
+    <mkdir dir="lib"/>
 
     <copy todir="${dist.dir}/lib" includeEmptyDirs="false" flatten="true">
       <fileset dir="${common.ivy.lib.dir}"/>
@@ -440,38 +432,37 @@
       </fileset>
     </copy>
 
-	<copy todir="${dist.dir}">
-		<fileset file="${build.dir}/${final.name}*.jar"/>
-	</copy>
+    <copy todir="${dist.dir}">
+      <fileset file="${build.dir}/${final.name}*.jar"/>
+    </copy>
 
     <exec dir="${dist.dir}" executable="sh" failonerror="true">
-     <env key="BASE_NATIVE_LIB_DIR" value="${lib.dir}/native"/>
      <env key="BUILD_NATIVE_DIR" value="${build.dir}/native"/>
      <env key="DIST_LIB_DIR" value="${dist.dir}/lib/native"/>
      <arg line="${native.src.dir}/packageNativeHadoop.sh"/>
     </exec>
 
-	<copy todir="${dist.dir}/docs">
-		<fileset dir="${build.docs}"/>
-	</copy>
+    <copy todir="${dist.dir}/docs">
+      <fileset dir="${build.docs}"/>
+    </copy>
 
-	<copy file="ivy.xml" tofile="${dist.dir}/ivy.xml"/>
+    <copy file="ivy.xml" tofile="${dist.dir}/ivy.xml"/>
+    
+    <copy todir="${dist.dir}/ivy">
+      <fileset dir="ivy"/>
+    </copy>
 
-	<copy todir="${dist.dir}/ivy">
-		<fileset dir="ivy"/>
-	</copy>
+    <copy todir="${dist.dir}">
+      <fileset dir=".">
+	<include name="*.txt" />
+      </fileset>
+    </copy>
 
-	<copy todir="${dist.dir}">
-		<fileset dir=".">
-			<include name="*.txt" />
-		</fileset>
-	</copy>
+    <copy todir="${dist.dir}/src" includeEmptyDirs="true">
+      <fileset dir="src" excludes="**/*.template **/docs/build/**/*"/>
+    </copy>
 
-	<copy todir="${dist.dir}/src" includeEmptyDirs="true">
-		<fileset dir="src" excludes="**/*.template **/docs/build/**/*"/>
-	</copy>
-
-	<copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/" file="build.xml"/>
   </target>
 
   <!-- ================================================================== -->
