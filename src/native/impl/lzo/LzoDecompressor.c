@@ -87,7 +87,7 @@ Java_com_hadoop_compression_lzo_LzoDecompressor_initIDs(
 	JNIEnv *env, jclass class
 	) {
 	// Load liblzo2.so
-	liblzo2 = dlopen("/usr/lib/liblzo2.so", RTLD_LAZY | RTLD_GLOBAL);
+	liblzo2 = dlopen("/usr/lib/x86_64-linux-gnu/liblzo2.so.2", RTLD_LAZY | RTLD_GLOBAL);
 	if (!liblzo2) {
 	  char* msg = (char*)malloc(1000);
 	  snprintf(msg, 1000, "%s (%s)!", "Cannot load " HADOOP_LZO_LIBRARY, dlerror());
