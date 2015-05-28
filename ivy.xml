@@ -65,10 +65,17 @@
       name="hadoop-common"
       rev="${hadoop-common.version}"
       conf="common->default" />
+
+    <dependency org="org.apache.hadoop"
+      name="hadoop-yarn-client"
+      rev="2.5.0-cdh5.3.3"
+      conf="common->default" />
+
     <dependency org="org.apache.hadoop"
       name="hadoop-core"
-      rev="${hadoop-core.version}"
+      rev="2.5.0-mr1-cdh5.3.3"
       conf="common->default" />
+
 
     <!--Configuration: commons-logging -->
 

@@ -227,11 +227,12 @@
     <mkdir dir="${build.native}/src/com/hadoop/compression/lzo"/>
 
     <javah classpath="${build.classes}"
-  	   destdir="${build.native}/src/com/hadoop/compression/lzo"
+           destdir="${build.native}/src/com/hadoop/compression/lzo"
            force="yes"
-  	   verbose="yes">
+           verbose="yes">
       <class name="com.hadoop.compression.lzo.LzoCompressor" />
       <class name="com.hadoop.compression.lzo.LzoDecompressor" />
+      <classpath refid="classpath"/>
     </javah>
 
     <exec dir="${build.native}" executable="sh" failonerror="true">
