@@ -31,7 +31,7 @@ TAR='tar cf -'
 UNTAR='tar xfBp -'
 
 # Copy the pre-built libraries in $BASE_NATIVE_LIB_DIR
-if [ -d $BASE_NATIVE_LIB_DIR ]
+if [ -d "$BASE_NATIVE_LIB_DIR" ]
 then
   for platform in `ls $BASE_NATIVE_LIB_DIR`
   do
